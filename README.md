@@ -2,7 +2,7 @@
 
 **Flicks** is a movies app using the [The Movie Database API](http://docs.themoviedb.apiary.io/#).
 
-Time spent: **0** hours spent in total
+Time spent: **2** hours spent in total
 
 ## User Stories
 
@@ -26,7 +26,7 @@ The following **optional** features are implemented:
 
 The following **additional** features are implemented:
 
-- [ ] List anything else that you can get done to improve the app functionality!
+- [ ] Displays movie info based phone's locale setting
 
 ## Video Walkthrough
 

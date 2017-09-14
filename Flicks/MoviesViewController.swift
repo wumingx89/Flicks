@@ -13,7 +13,7 @@ class MoviesViewController: UIViewController {
   
   @IBOutlet weak var moviesTableView: UITableView!
   
-  fileprivate var movies: [[String: Any]]!
+  fileprivate var movies: [[String: Any]]?
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -22,7 +22,7 @@ class MoviesViewController: UIViewController {
     moviesTableView.delegate = self
     
     MoviesViewController.fetchMovies(successCallBack: { (data) in
-      self.movies = data["results"] as! [[String: Any]]
+      self.movies = data["results"] as? [[String: Any]]
       self.moviesTableView.reloadData()
     }) { (error) in
       print(error.debugDescription)
@@ -32,6 +32,17 @@ class MoviesViewController: UIViewController {
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
     // Dispose of any resources that can be recreated.
+  }
+  
+  
+  // MARK: Navigation
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    let cell = sender as! UITableViewCell
+    let indexPath = moviesTableView.indexPath(for: cell)
+    let movie = movies![indexPath!.row]
+    
+    let detailViewController = segue.destination as! DetailViewController
+    detailViewController.movie = movie
   }
   
   class func fetchMovies(successCallBack: @escaping (NSDictionary) -> (), errorCallBack: ((Error?) -> ())?) {
@@ -63,15 +74,15 @@ extension MoviesViewController: UITableViewDelegate {
     
     if movies != nil {
       let movie = movies![indexPath.row]
-      cell.titleLabel.text = movie["original_title"] as? String
+      cell.titleLabel.text = movie["title"] as? String
       cell.overviewLabel.text = movie["overview"] as? String
       
       let posterPath = movie["poster_path"] as! String
-      let imageUrl = URL(string: Constants.MoviesDB.posterBaseUrl + posterPath)
+      let imageUrl = URL(string: Constants.MoviesDB.smallPosterBaseUrl + posterPath)
       
       cell.posterView.setImageWith(imageUrl!)
     }
-    print("\(indexPath.row)")
+    
     return cell
   }
 }

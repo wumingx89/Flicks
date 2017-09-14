@@ -10,7 +10,8 @@ struct Constants {
   
   struct MoviesDB {
     static let apiKey = "80e16e10e06289059b790b403e1b409f"
-    static let posterBaseUrl = "http://image.tmdb.org/t/p/w45"
+    static let smallPosterBaseUrl = "http://image.tmdb.org/t/p/w45"
+    static let originalPosterBaseUrl = "http://image.tmdb.org/t/p/original"
     static let nowPlayingUrl = "https://api.themoviedb.org/3/movie/now_playing?api_key="
   }
 }

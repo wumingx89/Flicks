@@ -15,6 +15,9 @@ class MoviesViewController: UIViewController {
   var endpoint: URL!
   
   fileprivate var movies: [[String: Any]]?
+  fileprivate var isMoreDataLoading = false
+  fileprivate var currentPage: Int!
+  fileprivate var totalPages: Int!
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -24,9 +27,11 @@ class MoviesViewController: UIViewController {
     moviesTableView.delegate = self
     
     // Fetch movies
-    fetchMovies(successCallBack: { (data) in
+    fetchMovies(endpoint: endpoint, successCallBack: { (data) in
       self.movies = data["results"] as? [[String: Any]]
       self.moviesTableView.reloadData()
+      self.currentPage = data["page"] as? Int ?? 0
+      self.totalPages = data["total_pages"] as? Int ?? 0
     }) { (error) in
       print(error.debugDescription)
     }
@@ -38,7 +43,7 @@ class MoviesViewController: UIViewController {
   }
   
   func refreshMovies(_ refreshControl: UIRefreshControl) {
-    fetchMovies(successCallBack: { (data) in
+    fetchMovies(endpoint: endpoint, successCallBack: { (data) in
       self.movies = data["results"] as? [[String: Any]]
       self.moviesTableView.reloadData()
       refreshControl.endRefreshing()
@@ -57,7 +62,7 @@ class MoviesViewController: UIViewController {
     detailViewController.movie = movie
   }
   
-  func fetchMovies(successCallBack: @escaping (NSDictionary) -> (), errorCallBack: ((Error?) -> ())?) {
+  func fetchMovies(endpoint: URL, successCallBack: @escaping (NSDictionary) -> (), errorCallBack: ((Error?) -> ())?) {
     let request = URLRequest(url: endpoint, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
     let session = URLSession(configuration: .default, delegate: nil, delegateQueue: OperationQueue.main)
     let task: URLSessionDataTask = session.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
@@ -95,6 +100,21 @@ extension MoviesViewController: UITableViewDelegate {
     }
     
     return cell
+  }
+}
+
+extension MoviesViewController: UIScrollViewDelegate {
+  func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    if (!isMoreDataLoading) {
+      let scrollViewContentHeight = moviesTableView.contentSize.height
+      let scrollOffsetThreshold = scrollViewContentHeight - moviesTableView.bounds.height
+      
+      if (scrollView.contentOffset.y > scrollOffsetThreshold && moviesTableView.isDragging) {
+        isMoreDataLoading = true
+        
+        fetchMovies(endpoint: endpoint, successCallBack: <#T##(NSDictionary) -> ()#>, errorCallBack: <#T##((Error?) -> ())?##((Error?) -> ())?##(Error?) -> ()#>)
+      }
+    }
   }
 }
 

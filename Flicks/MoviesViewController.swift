@@ -18,23 +18,34 @@ class MoviesViewController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    // Do any additional setup after loading the view, typically from a nib.
+    
+    // Set data source and delegate
     moviesTableView.dataSource = self
     moviesTableView.delegate = self
     
-    MoviesViewController.fetchMovies(endpoint: endpoint, successCallBack: { (data) in
+    // Fetch movies
+    fetchMovies(successCallBack: { (data) in
       self.movies = data["results"] as? [[String: Any]]
       self.moviesTableView.reloadData()
     }) { (error) in
       print(error.debugDescription)
     }
+    
+    // Set up refresh control
+    let refreshControl = UIRefreshControl()
+    refreshControl.addTarget(self, action: #selector(refreshMovies(_:)), for: .valueChanged)
+    moviesTableView.insertSubview(refreshControl, at: 0)
   }
   
-  override func didReceiveMemoryWarning() {
-    super.didReceiveMemoryWarning()
-    // Dispose of any resources that can be recreated.
+  func refreshMovies(_ refreshControl: UIRefreshControl) {
+    fetchMovies(successCallBack: { (data) in
+      self.movies = data["results"] as? [[String: Any]]
+      self.moviesTableView.reloadData()
+      refreshControl.endRefreshing()
+    }) { (error) in
+      print(error.debugDescription)
+    }
   }
-  
   
   // MARK: Navigation
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -46,7 +57,7 @@ class MoviesViewController: UIViewController {
     detailViewController.movie = movie
   }
   
-  class func fetchMovies(endpoint: URL, successCallBack: @escaping (NSDictionary) -> (), errorCallBack: ((Error?) -> ())?) {
+  func fetchMovies(successCallBack: @escaping (NSDictionary) -> (), errorCallBack: ((Error?) -> ())?) {
     let request = URLRequest(url: endpoint, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
     let session = URLSession(configuration: .default, delegate: nil, delegateQueue: OperationQueue.main)
     let task: URLSessionDataTask = session.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in

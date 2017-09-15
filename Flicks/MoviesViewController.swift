@@ -12,6 +12,7 @@ import AFNetworking
 class MoviesViewController: UIViewController {
   
   @IBOutlet weak var moviesTableView: UITableView!
+  var endpoint: URL!
   
   fileprivate var movies: [[String: Any]]?
   
@@ -21,7 +22,7 @@ class MoviesViewController: UIViewController {
     moviesTableView.dataSource = self
     moviesTableView.delegate = self
     
-    MoviesViewController.fetchMovies(successCallBack: { (data) in
+    MoviesViewController.fetchMovies(endpoint: endpoint, successCallBack: { (data) in
       self.movies = data["results"] as? [[String: Any]]
       self.moviesTableView.reloadData()
     }) { (error) in
@@ -45,9 +46,8 @@ class MoviesViewController: UIViewController {
     detailViewController.movie = movie
   }
   
-  class func fetchMovies(successCallBack: @escaping (NSDictionary) -> (), errorCallBack: ((Error?) -> ())?) {
-    let url = URL(string: Constants.MoviesDB.nowPlayingUrl + Constants.MoviesDB.apiKey)!
-    let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
+  class func fetchMovies(endpoint: URL, successCallBack: @escaping (NSDictionary) -> (), errorCallBack: ((Error?) -> ())?) {
+    let request = URLRequest(url: endpoint, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
     let session = URLSession(configuration: .default, delegate: nil, delegateQueue: OperationQueue.main)
     let task: URLSessionDataTask = session.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
       if let error = error {

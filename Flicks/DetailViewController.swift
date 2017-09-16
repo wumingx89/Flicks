@@ -47,12 +47,14 @@ class DetailViewController: UIViewController {
             UIView.animate(withDuration: 0.75, animations: { 
               self.posterImage.alpha = 1.0
             }, completion: { (success) in
-              print("Calling load large image - small image was loaded from network")
-              self.loadLargeImage(placeholder: smallImage)
+              DispatchQueue.main.async {
+                self.loadLargeImage(placeholder: smallImage)
+              }
             })
           } else {
-            print("Calling load large image - small image was loaded from cache")
-            self.loadLargeImage(placeholder: smallImage)
+            DispatchQueue.main.async {
+              self.loadLargeImage(placeholder: smallImage)
+            }
           }
       }, failure: { (request, response, error) in
         // Try to get large image
@@ -63,13 +65,11 @@ class DetailViewController: UIViewController {
   
   private func loadLargeImage(placeholder: UIImage?) {
     let largeImageReq = URLRequest(url: URL(string: movie.getOriginalSizeURLString()!)!)
-    print("Attempting to load large image:\n\(largeImageReq.url!.absoluteURL)")
     
     posterImage.setImageWith(
       largeImageReq,
       placeholderImage: placeholder,
       success: { (largeRequest, largeResponse, largeImage) in
-        print("Got large image")
         self.posterImage.image = largeImage
         if largeResponse != nil && placeholder == nil {
           self.posterImage.alpha = 0.0
@@ -78,7 +78,6 @@ class DetailViewController: UIViewController {
           })
         }
     }) { (request, reponse, error) in
-      print("Got an error")
       print(error.localizedDescription)
       self.posterImage.image = placeholder
     }

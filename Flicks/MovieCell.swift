@@ -19,6 +19,11 @@ class MovieCell: UITableViewCell {
     
     // Disable selection styled
     self.selectionStyle = .none
+    
+    // Customize cell appearance
+//    backgroundColor = Constants.Theme.cellColor
+//    titleLabel.textColor = Constants.Theme.defaultTextColor
+//    overviewLabel.textColor = Constants.Theme.defaultTextColor
   }
   
   override func setSelected(_ selected: Bool, animated: Bool) {

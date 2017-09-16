@@ -20,12 +20,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     window = UIWindow(frame: UIScreen.main.bounds)
     let storyboard = UIStoryboard(name: "Main", bundle: nil)
     let nowPlayingNC = storyboard.instantiateViewController(withIdentifier: "MoviesNavigationController") as! UINavigationController
+    colorNavBar(nowPlayingNC)
+    
     let nowPlayingVC = nowPlayingNC.topViewController as! MoviesViewController
     nowPlayingVC.endpoint = Constants.MoviesDB.nowPlayingURL
     nowPlayingVC.tabBarItem.title = "Now Playing"
     nowPlayingVC.tabBarItem.image = UIImage(named: "now_playing")
     
     let topRatedNC = storyboard.instantiateViewController(withIdentifier: "MoviesNavigationController") as! UINavigationController
+    colorNavBar(topRatedNC)
     let topRatedVC = topRatedNC.topViewController as! MoviesViewController
     topRatedVC.endpoint = Constants.MoviesDB.topRatedURL
     topRatedVC.tabBarItem.title = "Top Rated"
@@ -33,6 +36,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     let tabBarVC = UITabBarController()
     tabBarVC.setViewControllers([nowPlayingNC, topRatedNC], animated: false)
+    tabBarVC.tabBar.barTintColor = Constants.Theme.barColor
+    tabBarVC.tabBar.tintColor = UIColor.white
     
     window?.rootViewController = tabBarVC
     window?.makeKeyAndVisible()
@@ -55,6 +60,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     )
     
     return true
+  }
+  
+  private func colorNavBar(_ navigationController: UINavigationController) {
+    let navBar = navigationController.navigationBar
+    navBar.barTintColor = Constants.Theme.barColor
+    navBar.titleTextAttributes = [NSForegroundColorAttributeName: Constants.Theme.defaultTextColor]
   }
   
   func applicationWillResignActive(_ application: UIApplication) {

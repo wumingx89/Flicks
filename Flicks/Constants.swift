@@ -5,6 +5,7 @@
 //  Created by Wuming Xie on 9/13/17.
 //  Copyright © 2017 Wuming Xie. All rights reserved.
 //
+import UIKit
 
 struct Constants {
   
@@ -18,5 +19,11 @@ struct Constants {
     static let originalPosterBaseUrl = "http://image.tmdb.org/t/p/original"
     static let nowPlayingURL = baseURL + nowPlaying
     static let topRatedURL = baseURL + topRated
+  }
+  
+  struct Theme {
+    static let barColor = UIColor.black
+    static let cellColor = UIColor(red: 0.00, green: 0.16, blue: 0.29, alpha: 1.0)
+    static let defaultTextColor = UIColor.white
   }
 }

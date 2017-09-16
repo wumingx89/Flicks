@@ -9,23 +9,48 @@
 import AFNetworking
 
 class Movie {
+  private static let idKey = "id"
   private static let titleKey = "title"
   private static let posterKey = "poster_path"
   private static let overviewKey = "overview"
+  private static let voteAvgKey = "vote_average"
+  
   private static let sessionManager = { () -> AFHTTPSessionManager in 
     let manager = AFHTTPSessionManager()
     manager.requestSerializer.timeoutInterval = TimeInterval(10)
     return manager
   }()
   
-  var title: String?
-  var posterPath: String?
-  var overview: String?
+  private(set) var id: Int?
+  private(set) var title: String?
+  private(set) var overview: String?
+  private(set) var posterPath: String?
+  private(set) var voteAvg: Double!
   
   init(from json: [String: Any]) {
+    id = json[Movie.idKey] as? Int
     title = json[Movie.titleKey] as? String
-    posterPath = json[Movie.posterKey] as? String
     overview = json[Movie.overviewKey] as? String
+    posterPath = json[Movie.posterKey] as? String
+    voteAvg = json[Movie.voteAvgKey] as? Double ?? 0.0
+  }
+  
+  func hasPoster() -> Bool {
+    return posterPath != nil
+  }
+  
+  func getSmallSizeURLString() -> String? {
+    if hasPoster() {
+      return Constants.MoviesDB.smallPosterBaseUrl + posterPath!
+    }
+    return nil
+  }
+  
+  func getOriginalSizeURLString() -> String? {
+    if hasPoster() {
+      return Constants.MoviesDB.originalPosterBaseUrl + posterPath!
+    }
+    return nil
   }
   
   class func fetchMovies(endpoint: String,

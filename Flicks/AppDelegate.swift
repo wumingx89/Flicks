@@ -21,13 +21,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let storyboard = UIStoryboard(name: "Main", bundle: nil)
     let nowPlayingNC = storyboard.instantiateViewController(withIdentifier: "MoviesNavigationController") as! UINavigationController
     let nowPlayingVC = nowPlayingNC.topViewController as! MoviesViewController
-    nowPlayingVC.endpoint = MDBURLs.nowPlayingURL
+    nowPlayingVC.endpoint = Constants.MoviesDB.nowPlayingURL
     nowPlayingVC.tabBarItem.title = "Now Playing"
     nowPlayingVC.tabBarItem.image = UIImage(named: "now_playing")
     
     let topRatedNC = storyboard.instantiateViewController(withIdentifier: "MoviesNavigationController") as! UINavigationController
     let topRatedVC = topRatedNC.topViewController as! MoviesViewController
-    topRatedVC.endpoint = MDBURLs.topRatedURL
+    topRatedVC.endpoint = Constants.MoviesDB.topRatedURL
     topRatedVC.tabBarItem.title = "Top Rated"
     topRatedVC.tabBarItem.image = UIImage(named: "top_rated")
     

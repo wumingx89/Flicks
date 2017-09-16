@@ -53,8 +53,8 @@
                     </view>
                     <navigationItem key="navigationItem" id="nAx-fX-mAN"/>
                     <connections>
-                        <outlet property="backdropImage" destination="70q-oa-b7J" id="MXQ-hZ-ZGO"/>
                         <outlet property="infoView" destination="Pfp-Kq-XnT" id="HbG-Cx-XFl"/>
+                        <outlet property="posterImage" destination="70q-oa-b7J" id="AVo-IA-MIj"/>
                         <outlet property="scrollView" destination="KOp-bL-HIk" id="THG-ps-PAe"/>
                         <outlet property="summaryLabel" destination="wzT-0B-wis" id="s2A-Rw-qc0"/>
                         <outlet property="titleLabel" destination="dxl-Um-zLe" id="wI6-gm-340"/>
@@ -77,11 +77,11 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="MovieCell" rowHeight="170" id="JxS-ze-4CU" customClass="MovieCell" customModule="Flicks" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="MovieCell" rowHeight="170" id="JxS-ze-4CU" customClass="MovieCell" customModule="Flicks" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="170"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="JxS-ze-4CU" id="Wy1-RH-DkM">
-                                            <rect key="frame" x="0.0" y="0.0" width="342" height="169.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="170"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="justified" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="cn4-30-1EP">

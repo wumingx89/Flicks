@@ -141,13 +141,7 @@ extension MoviesViewController: UITableViewDelegate {
     
     if let movies = movieObjects {
       let movie = movies[indexPath.row]
-      cell.titleLabel.text = movie.title
-      cell.overviewLabel.text = movie.overview
-      
-      if let posterPath = movie.posterPath {
-        let imageUrl = URL(string: Constants.MoviesDB.smallPosterBaseUrl + posterPath)
-        cell.posterView.setImageWith(imageUrl!)
-      }
+      cell.setCell(with: movie)
     }
     
     return cell

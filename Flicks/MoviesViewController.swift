@@ -15,6 +15,7 @@ class MoviesViewController: UIViewController {
   @IBOutlet weak var moviesTableView: UITableView!
   var endpoint: String!
   
+  fileprivate var loadingMoreView: InfiniteScrollActivityView?
   fileprivate var movieObjects: [Movie]?
   fileprivate var movies: [[String: Any]]?
   fileprivate var isMoreDataLoading = false
@@ -23,6 +24,16 @@ class MoviesViewController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    
+    // Set up Infinite Scroll loading indicator
+    let frame = CGRect(x: 0, y: moviesTableView.contentSize.height, width: moviesTableView.bounds.size.width, height: InfiniteScrollActivityView.defaultHeight)
+    loadingMoreView = InfiniteScrollActivityView(frame: frame)
+    loadingMoreView!.isHidden = true
+    moviesTableView.addSubview(loadingMoreView!)
+    
+    var insets = moviesTableView.contentInset
+    insets.bottom += InfiniteScrollActivityView.defaultHeight
+    moviesTableView.contentInset = insets
     
     // Set data source and delegate
     moviesTableView.dataSource = self
@@ -113,6 +124,11 @@ extension MoviesViewController: UIScrollViewDelegate {
         isMoreDataLoading = true
         currentPage += 1
         
+        // Update position of loadingMoreView, and start loading indicator
+        let frame = CGRect(x: 0, y: moviesTableView.contentSize.height, width: moviesTableView.bounds.size.width, height: InfiniteScrollActivityView.defaultHeight)
+        loadingMoreView?.frame = frame
+        loadingMoreView!.startAnimating()
+        
         Movie.fetchMovies(
           endpoint: endpoint,
           page: currentPage,
@@ -121,6 +137,7 @@ extension MoviesViewController: UIScrollViewDelegate {
             self.movieObjects?.append(contentsOf: movies)
             self.isMoreDataLoading = false
             self.moviesTableView.reloadData()
+            self.loadingMoreView!.stopAnimating()
         }) { (error) in
           print(error.debugDescription)
         }

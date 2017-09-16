@@ -12,6 +12,11 @@ class Movie {
   private static let titleKey = "title"
   private static let posterKey = "poster_path"
   private static let overviewKey = "overview"
+  private static let sessionManager = { () -> AFHTTPSessionManager in 
+    let manager = AFHTTPSessionManager()
+    manager.requestSerializer.timeoutInterval = TimeInterval(10)
+    return manager
+  }()
   
   var title: String?
   var posterPath: String?
@@ -28,13 +33,12 @@ class Movie {
                          loading: (() -> ())?,
                          success: @escaping ([Movie], Int, Int) -> (),
                          error: ((Error?) -> ())?) {
-    let manager = AFHTTPSessionManager()
     
     if let loading = loading {
       loading()
     }
     
-    manager.get(
+    sessionManager.get(
       endpoint,
       parameters: ["api_key": Constants.MoviesDB.apiKey, "page": page],
       progress: nil,

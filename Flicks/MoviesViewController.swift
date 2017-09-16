@@ -13,6 +13,7 @@ import ACProgressHUD_Swift
 class MoviesViewController: UIViewController {
   
   @IBOutlet weak var moviesTableView: UITableView!
+  @IBOutlet weak var networkErrorLabel: UILabel!
   var endpoint: String!
   
   fileprivate var loadingMoreView: InfiniteScrollActivityView?
@@ -21,9 +22,14 @@ class MoviesViewController: UIViewController {
   fileprivate var isMoreDataLoading = false
   fileprivate var currentPage = 0
   fileprivate var totalPages = 0
+  fileprivate var originalY = CGFloat(0)
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    
+    // hide error label
+    originalY = networkErrorLabel.frame.origin.y
+    hideLabel(animated: false)
     
     // Set up Infinite Scroll loading indicator
     let frame = CGRect(x: 0, y: moviesTableView.contentSize.height, width: moviesTableView.bounds.size.width, height: InfiniteScrollActivityView.defaultHeight)
@@ -53,6 +59,8 @@ class MoviesViewController: UIViewController {
         ACProgressHUD.shared.hideHUD()
     }) { (error) in
       print(error.debugDescription)
+      ACProgressHUD.shared.hideHUD()
+      self.showLabel(animated: true)
     }
     
     // Set up refresh control
@@ -62,6 +70,7 @@ class MoviesViewController: UIViewController {
   }
   
   func refreshMovies(_ refreshControl: UIRefreshControl) {
+    hideLabel(animated: true)
     Movie.fetchMovies(
       endpoint: endpoint,
       loading: nil,
@@ -73,6 +82,8 @@ class MoviesViewController: UIViewController {
         refreshControl.endRefreshing()
     }) { (error) in
       print(error.debugDescription)
+      refreshControl.endRefreshing()
+      self.showLabel(animated: true)
     }
   }
   
@@ -85,6 +96,35 @@ class MoviesViewController: UIViewController {
       
       let detailViewController = segue.destination as! DetailViewController
       detailViewController.movie = movie
+    }
+  }
+  
+  // MARK: Error label animation
+  fileprivate func hideLabel() {
+    networkErrorLabel.frame.origin.y -= networkErrorLabel.frame.height
+  }
+  
+  fileprivate func showLabel() {
+    networkErrorLabel.frame.origin.y = originalY
+  }
+  
+  fileprivate func hideLabel(animated: Bool) {
+    if animated {
+      UIView.animate(withDuration: 0.5, animations: { 
+        self.hideLabel()
+      })
+    } else {
+      hideLabel()
+    }
+  }
+  
+  fileprivate func showLabel(animated: Bool) {
+    if animated {
+      UIView.animate(withDuration: 0.5, animations: { 
+        self.showLabel()
+      })
+    } else {
+      showLabel()
     }
   }
 }
@@ -127,6 +167,7 @@ extension MoviesViewController: UIScrollViewDelegate {
         // Update position of loadingMoreView, and start loading indicator
         let frame = CGRect(x: 0, y: moviesTableView.contentSize.height, width: moviesTableView.bounds.size.width, height: InfiniteScrollActivityView.defaultHeight)
         loadingMoreView?.frame = frame
+        hideLabel(animated: true)
         loadingMoreView!.startAnimating()
         
         Movie.fetchMovies(
@@ -140,6 +181,8 @@ extension MoviesViewController: UIScrollViewDelegate {
             self.loadingMoreView!.stopAnimating()
         }) { (error) in
           print(error.debugDescription)
+          self.loadingMoreView!.stopAnimating()
+          self.showLabel(animated: true)
         }
       }
     }

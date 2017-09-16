@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AFNetworking
 import ACProgressHUD_Swift
 
 @UIApplicationMain

@@ -17,7 +17,7 @@ class MDBURLs {
   static let nowPlayingURL = getURL(nowPlaying)
   static let topRatedURL = getURL(topRated)
   
-  private class func getURL(_ endpoint: String) -> URL {
-    return URL(string: "\(baseURLString)\(endpoint)?api_key=\(apiKey)")!
+  private class func getURL(_ endpoint: String) -> String {
+    return "\(baseURLString)\(endpoint)"
   }
 }

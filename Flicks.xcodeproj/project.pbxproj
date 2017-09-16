@@ -10,6 +10,7 @@
 		7C7760941F6B02B6002D8A2B /* MDBURLs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C7760931F6B02B6002D8A2B /* MDBURLs.swift */; };
 		B94DD8AE1F69167F005BEF16 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B94DD8AD1F69167F005BEF16 /* Constants.swift */; };
 		B94DD8B01F69F0DD005BEF16 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B94DD8AF1F69F0DD005BEF16 /* DetailViewController.swift */; };
+		B9930C551F6BBFB500203CE2 /* Movie.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9930C541F6BBFB500203CE2 /* Movie.swift */; };
 		B9E6D61A1F68D27B0019D482 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E6D6191F68D27B0019D482 /* AppDelegate.swift */; };
 		B9E6D61C1F68D27B0019D482 /* MoviesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E6D61B1F68D27B0019D482 /* MoviesViewController.swift */; };
 		B9E6D61F1F68D27B0019D482 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B9E6D61D1F68D27B0019D482 /* Main.storyboard */; };
@@ -26,6 +27,7 @@
 		7C7760931F6B02B6002D8A2B /* MDBURLs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MDBURLs.swift; sourceTree = "<group>"; };
 		B94DD8AD1F69167F005BEF16 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		B94DD8AF1F69F0DD005BEF16 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		B9930C541F6BBFB500203CE2 /* Movie.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Movie.swift; sourceTree = "<group>"; };
 		B9E6D6161F68D27B0019D482 /* Flicks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flicks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9E6D6191F68D27B0019D482 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B9E6D61B1F68D27B0019D482 /* MoviesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesViewController.swift; sourceTree = "<group>"; };
@@ -65,6 +67,16 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		B9930C531F6BBF7900203CE2 /* MovieDB */ = {
+			isa = PBXGroup;
+			children = (
+				B94DD8AD1F69167F005BEF16 /* Constants.swift */,
+				7C7760931F6B02B6002D8A2B /* MDBURLs.swift */,
+				B9930C541F6BBFB500203CE2 /* Movie.swift */,
+			);
+			name = MovieDB;
+			sourceTree = "<group>";
+		};
 		B9E6D60D1F68D27B0019D482 = {
 			isa = PBXGroup;
 			children = (
@@ -88,13 +100,12 @@
 			children = (
 				B9F194B01F6905B6005984F0 /* ViewControllers */,
 				B9F194AD1F690597005984F0 /* Views */,
+				B9930C531F6BBF7900203CE2 /* MovieDB */,
 				B9E6D6191F68D27B0019D482 /* AppDelegate.swift */,
 				B9E6D61D1F68D27B0019D482 /* Main.storyboard */,
 				B9E6D6201F68D27B0019D482 /* Assets.xcassets */,
 				B9E6D6221F68D27B0019D482 /* LaunchScreen.storyboard */,
 				B9E6D6251F68D27B0019D482 /* Info.plist */,
-				B94DD8AD1F69167F005BEF16 /* Constants.swift */,
-				7C7760931F6B02B6002D8A2B /* MDBURLs.swift */,
 			);
 			path = Flicks;
 			sourceTree = "<group>";
@@ -194,10 +205,12 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Flicks/Pods-Flicks-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/ACProgressHUD-Swift/ACProgressHUD_Swift.framework",
 				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ACProgressHUD_Swift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -245,6 +258,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B9930C551F6BBFB500203CE2 /* Movie.swift in Sources */,
 				B9E6D61C1F68D27B0019D482 /* MoviesViewController.swift in Sources */,
 				B9E6D61A1F68D27B0019D482 /* AppDelegate.swift in Sources */,
 				B94DD8B01F69F0DD005BEF16 /* DetailViewController.swift in Sources */,

@@ -8,16 +8,18 @@
 
 import UIKit
 import AFNetworking
+import ACProgressHUD_Swift
 
 class MoviesViewController: UIViewController {
   
   @IBOutlet weak var moviesTableView: UITableView!
-  var endpoint: URL!
+  var endpoint: String!
   
+  fileprivate var movieObjects: [Movie]?
   fileprivate var movies: [[String: Any]]?
   fileprivate var isMoreDataLoading = false
-  fileprivate var currentPage: Int!
-  fileprivate var totalPages: Int!
+  fileprivate var currentPage = 0
+  fileprivate var totalPages = 0
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -27,11 +29,17 @@ class MoviesViewController: UIViewController {
     moviesTableView.delegate = self
     
     // Fetch movies
-    fetchMovies(endpoint: endpoint, successCallBack: { (data) in
-      self.movies = data["results"] as? [[String: Any]]
-      self.moviesTableView.reloadData()
-      self.currentPage = data["page"] as? Int ?? 0
-      self.totalPages = data["total_pages"] as? Int ?? 0
+    Movie.fetchMovies(
+      endpoint: endpoint,
+      loading: {
+        ACProgressHUD.shared.showHUD()
+      },
+      success: { (movies, cur, total) in
+        self.movieObjects = movies
+        self.currentPage = cur
+        self.totalPages = total
+        self.moviesTableView.reloadData()
+        ACProgressHUD.shared.hideHUD()
     }) { (error) in
       print(error.debugDescription)
     }
@@ -43,10 +51,15 @@ class MoviesViewController: UIViewController {
   }
   
   func refreshMovies(_ refreshControl: UIRefreshControl) {
-    fetchMovies(endpoint: endpoint, successCallBack: { (data) in
-      self.movies = data["results"] as? [[String: Any]]
-      self.moviesTableView.reloadData()
-      refreshControl.endRefreshing()
+    Movie.fetchMovies(
+      endpoint: endpoint,
+      loading: nil,
+      success: { (movies, cur, total) in
+        self.movieObjects = movies
+        self.currentPage = cur
+        self.totalPages = total
+        self.moviesTableView.reloadData()
+        refreshControl.endRefreshing()
     }) { (error) in
       print(error.debugDescription)
     }
@@ -54,33 +67,20 @@ class MoviesViewController: UIViewController {
   
   // MARK: Navigation
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    let cell = sender as! UITableViewCell
-    let indexPath = moviesTableView.indexPath(for: cell)
-    let movie = movies![indexPath!.row]
-    
-    let detailViewController = segue.destination as! DetailViewController
-    detailViewController.movie = movie
-  }
-  
-  func fetchMovies(endpoint: URL, successCallBack: @escaping (NSDictionary) -> (), errorCallBack: ((Error?) -> ())?) {
-    let request = URLRequest(url: endpoint, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
-    let session = URLSession(configuration: .default, delegate: nil, delegateQueue: OperationQueue.main)
-    let task: URLSessionDataTask = session.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
-      if let error = error {
-        errorCallBack?(error)
-      } else if let data = data,
-        let dataDictionary = try! JSONSerialization.jsonObject(with: data, options: []) as? NSDictionary {
-        print(dataDictionary)
-        successCallBack(dataDictionary)
-      }
+    if let movieObjects = movieObjects, movieObjects.count > 0 {
+      let cell = sender as! UITableViewCell
+      let indexPath = moviesTableView.indexPath(for: cell)
+      let movie = movieObjects[indexPath!.row]
+      
+      let detailViewController = segue.destination as! DetailViewController
+      detailViewController.movie = movie
     }
-    task.resume()
   }
 }
 
 extension MoviesViewController: UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return movies == nil ? 0 : movies!.count;
+    return movieObjects == nil ? 0 : movieObjects!.count;
   }
 }
 
@@ -88,15 +88,15 @@ extension MoviesViewController: UITableViewDelegate {
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "MovieCell", for: indexPath) as! MovieCell
     
-    if movies != nil {
-      let movie = movies![indexPath.row]
-      cell.titleLabel.text = movie["title"] as? String
-      cell.overviewLabel.text = movie["overview"] as? String
+    if let movies = movieObjects {
+      let movie = movies[indexPath.row]
+      cell.titleLabel.text = movie.title
+      cell.overviewLabel.text = movie.overview
       
-      let posterPath = movie["poster_path"] as! String
-      let imageUrl = URL(string: Constants.MoviesDB.smallPosterBaseUrl + posterPath)
-      
-      cell.posterView.setImageWith(imageUrl!)
+      if let posterPath = movie.posterPath {
+        let imageUrl = URL(string: Constants.MoviesDB.smallPosterBaseUrl + posterPath)
+        cell.posterView.setImageWith(imageUrl!)
+      }
     }
     
     return cell
@@ -109,10 +109,21 @@ extension MoviesViewController: UIScrollViewDelegate {
       let scrollViewContentHeight = moviesTableView.contentSize.height
       let scrollOffsetThreshold = scrollViewContentHeight - moviesTableView.bounds.height
       
-      if (scrollView.contentOffset.y > scrollOffsetThreshold && moviesTableView.isDragging) {
+      if (scrollView.contentOffset.y > scrollOffsetThreshold && moviesTableView.isDragging && currentPage < totalPages) {
         isMoreDataLoading = true
+        currentPage += 1
         
-        fetchMovies(endpoint: endpoint, successCallBack: <#T##(NSDictionary) -> ()#>, errorCallBack: <#T##((Error?) -> ())?##((Error?) -> ())?##(Error?) -> ()#>)
+        Movie.fetchMovies(
+          endpoint: endpoint,
+          page: currentPage,
+          loading: nil,
+          success: { (movies, cur, total) in
+            self.movieObjects?.append(contentsOf: movies)
+            self.isMoreDataLoading = false
+            self.moviesTableView.reloadData()
+        }) { (error) in
+          print(error.debugDescription)
+        }
       }
     }
   }

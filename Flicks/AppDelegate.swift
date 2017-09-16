@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import ACProgressHUD_Swift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -34,6 +35,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     window?.rootViewController = tabBarVC
     window?.makeKeyAndVisible()
+    
+    // Configure hud
+    ACProgressHUD.shared.configureProgressHudStyle(
+      withProgressText: "Loading ...",
+      progressTextColor: UIColor.black,
+      hudBackgroundColor: UIColor.white,
+      shadowColor: UIColor.black,
+      shadowRadius: 10,
+      cornerRadius: 5,
+      indicatorColor: UIColor.blue,
+      enableBackground: false,
+      backgroundColor: UIColor.black,
+      backgroundColorAlpha: 0.3,
+      enableBlurBackground: false,
+      showHudAnimation: .growIn,
+      dismissHudAnimation: .growOut
+    )
     
     return true
   }

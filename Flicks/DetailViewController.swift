@@ -16,21 +16,22 @@ class DetailViewController: UIViewController {
   @IBOutlet weak var titleLabel: UILabel!
   @IBOutlet weak var summaryLabel: UILabel!
   
-  var movie: [String: Any]!
+  var movie: Movie!
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    // Set up scroll view
-    scrollView.contentSize = CGSize(width: scrollView.frame.size.width, height: backdropImage.frame.height + infoView.frame.height)
-    
     // Set up details view
-    titleLabel.text = movie["original_title"] as? String
-    summaryLabel.text = movie["overview"] as? String
+    titleLabel.text = movie.title
+    summaryLabel.text = movie.overview
+    summaryLabel.sizeToFit()
     
-    if let posterPath = movie["poster_path"] as? String {
+    if let posterPath = movie.posterPath {
       backdropImage.setImageWith(URL(string: Constants.MoviesDB.originalPosterBaseUrl + posterPath)!)
     }
+    
+    // Set up scroll view
+    scrollView.contentSize = CGSize(width: scrollView.frame.size.width, height: backdropImage.frame.height + infoView.frame.height)
   }
   
   override func didReceiveMemoryWarning() {

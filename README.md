@@ -2,7 +2,7 @@
 
 **Flicks** is a movies app using the [The Movie Database API](http://docs.themoviedb.apiary.io/#).
 
-Time spent: **16** hours spent in total
+Time spent: **20** hours spent in total
 
 ## User Stories
 
@@ -17,12 +17,12 @@ The following **required** functionality is completed:
 The following **optional** features are implemented:
 
 - [x] Add a tab bar for **Now Playing** and **Top Rated** movies.
-- [ ] Implement segmented control to switch between list view and grid view.
-- [ ] Add a search bar.
+- [x] Implement segmented control to switch between list view and grid view.
+- [x] Add a search bar.
 - [x] All images fade in.
 - [x] For the large poster, load the low-res image first, switch to high-res when complete.
-- [ ] Customize the highlight and selection effect of the cell.
-- [ ] Customize the navigation bar.
+- [x] Customize the highlight and selection effect of the cell.
+- [x] Customize the navigation bar.
 
 The following **additional** features are implemented:
 
@@ -33,13 +33,13 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='https://i.imgur.com/0VaCiJ3.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://i.imgur.com/ICqdhIP.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-I'm having trouble adding a search bar under the navigation bar.
+The required portion of the project was fairly straight forward, but I found making a polished experience quite time consuming. I had some trouble with the refresh UI control when I added a search bar in for the movies table view. Overall this was a great introduction to UIScrollViews (table and collection views), as well as working with network calls. Still needs some cleaning up in the UI.
 
 ## License
 

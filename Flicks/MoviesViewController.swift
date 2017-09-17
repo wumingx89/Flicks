@@ -134,7 +134,14 @@ class MoviesViewController: UIViewController {
   
   // MARK: Navigation
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    if let movieObjects = movieObjects, movieObjects.count > 0 {
+    let movies: [Movie]?
+    if moviesTableView.isHidden {
+      movies = searchCollection ? filteredCollection : movieObjects
+    } else {
+      movies = searchTable ? filteredTable : movieObjects
+    }
+    
+    if let movies = movies, movies.count > 0 {
       let indexPath: IndexPath?
       
       if moviesTableView.isHidden {
@@ -144,7 +151,7 @@ class MoviesViewController: UIViewController {
       }
       
       let detailViewController = segue.destination as! DetailViewController
-      detailViewController.movie = movieObjects[indexPath!.row]
+      detailViewController.movie = movies[indexPath!.row]
     }
   }
   
@@ -222,16 +229,11 @@ extension MoviesViewController: UISearchBarDelegate {
     let tempMovies = movieObjects?.filter({ (movie) -> Bool in
       if let title = movie.title {
         if let range = title.range(of: searchText, options: String.CompareOptions.caseInsensitive) {
-          print(title)
-          print(range.description)
           return !range.isEmpty
         }
       }
       return false
     })
-    
-    print("search: \(searchText), found: \(tempMovies?.count ?? 0)")
-    print(tempMovies!)
     
     if moviesTableView.isHidden {
       filteredCollection = tempMovies
@@ -244,45 +246,26 @@ extension MoviesViewController: UISearchBarDelegate {
     }
   }
   
-  func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-    
-    if moviesTableView.isHidden {
-      print("collection begin")
-      searchCollection = true
-    } else {
-      print("begin")
-      searchTable = true
-    }
-  }
-  
-  func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-    if moviesTableView.isHidden {
-      print("collection end")
-      //            searchCollectionActive = false
-    } else {
-      print("end")
-      searchTable = false
-    }
-  }
-  
   func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+    searchBar.text = nil
+    view.endEditing(true)
     if moviesTableView.isHidden {
-      print("collection cancel")
       searchCollection = false
+      moviesCollectionView.reloadData()
     } else {
-      print("cancel")
       searchTable = false
+      moviesTableView.reloadData()
     }
   }
   
   func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
     if moviesTableView.isHidden {
-      print("collection search")
-      searchCollection = false
+      searchCollection = true
     } else {
-      print("search")
-      searchTable = false
+      searchTable = true
     }
+    
+    view.endEditing(true)
   }
 }
 
@@ -332,4 +315,3 @@ extension MoviesViewController: UIScrollViewDelegate {
     loader.startAnimating()
   }
 }
-

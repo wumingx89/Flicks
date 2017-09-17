@@ -18,7 +18,7 @@ class MovieCell: UITableViewCell {
     super.awakeFromNib()
     
     // Disable selection styled
-    self.selectionStyle = .none
+    selectionStyle = .none
   }
   
   override func setSelected(_ selected: Bool, animated: Bool) {
@@ -26,41 +26,39 @@ class MovieCell: UITableViewCell {
   }
   
   func setCell(with movie: Movie) {
-    self.titleLabel.text = movie.title
-    self.overviewLabel.text = movie.overview
-    self.posterView.image = nil
+    titleLabel.text = movie.title
+    overviewLabel.text = movie.overview
+    
+    MovieCell.getImage(forView: posterView, movie: movie)
+  }
+  
+  class func getImage(forView posterView: UIImageView, movie: Movie) {
+    posterView.image = nil
     
     if let posterPath = movie.getSmallSizeURLString() {
       let originalPosterRequest = URLRequest(
         url: URL(string: posterPath)!,
         cachePolicy: .reloadIgnoringLocalAndRemoteCacheData,
         timeoutInterval: 10)
-      self.posterView.setImageWith(
+      
+      posterView.setImageWith(
         originalPosterRequest,
         placeholderImage: nil,
         success: { (request, response, image) in
           if response != nil  {
             // Image was not cached
-            self.posterView.alpha = 0.0
-            self.posterView.image = image
+            posterView.alpha = 0.0
+            posterView.image = image
             UIView.animate(withDuration: 0.75) {
-              self.posterView.alpha = 1.0
+              posterView.alpha = 1.0
             }
           } else {
             // Image was cached, just load the image
-            self.posterView.image = image
+            posterView.image = image
           }
       }, failure: { (request, response, error) in
         
       })
-    } else {
-      self.posterView.image = nil
-    }
-  }
-  
-  fileprivate func fadeInImage() {
-    UIView.animate(withDuration: 0.75) { 
-      self.posterView.alpha = 1.0
     }
   }
 }

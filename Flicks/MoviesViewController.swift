@@ -22,6 +22,7 @@ class MoviesViewController: UIViewController {
   
   fileprivate var loadingMoreView: InfiniteScrollActivityView!
   fileprivate var collectionLoadView: InfiniteScrollActivityView!
+  fileprivate let refreshControl = UIRefreshControl()
   fileprivate var movieObjects: [Movie]?
   fileprivate var filteredTable: [Movie]?
   fileprivate var filteredCollection: [Movie]?
@@ -31,25 +32,6 @@ class MoviesViewController: UIViewController {
   fileprivate var originalY = CGFloat(0)
   fileprivate var searchTable = false
   fileprivate var searchCollection = false
-  
-  func infiniteActivityViewSetup(view: UIScrollView) -> InfiniteScrollActivityView {
-    let frame = CGRect(
-      x: 0,
-      y: view.contentSize.height,
-      width: view.bounds.size.width,
-      height: InfiniteScrollActivityView.defaultHeight
-    )
-    let loadingView = InfiniteScrollActivityView(frame: frame)
-    loadingView.isHidden = true
-    loadingView.tintColor = Constants.Theme.defaultTextColor
-    view.addSubview(loadingView)
-    
-    var insets = view.contentInset
-    insets.bottom += InfiniteScrollActivityView.defaultHeight
-    view.contentInset = insets
-    
-    return loadingView
-  }
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -87,11 +69,8 @@ class MoviesViewController: UIViewController {
     }
     
     // Set up refresh control
-    let refreshControl = UIRefreshControl()
     refreshControl.tintColor = UIColor.white
-    refreshControl.addTarget(self, action: #selector(refreshMovies(_:)), for: .valueChanged)
-    moviesTableView.insertSubview(refreshControl, at: 0)
-    moviesCollectionView.insertSubview(refreshControl, at: 0)
+    refreshControl.addTarget(self, action: #selector(refreshMovies), for: .valueChanged)
   }
   
   @IBAction func showTableOrCollectionView(_ sender: Any) {
@@ -102,11 +81,32 @@ class MoviesViewController: UIViewController {
       moviesCollectionView.isHidden = true
       moviesTableView.isHidden = false
       searchTable = false
+      moviesTableView.insertSubview(refreshControl, at: 0)
     default:
       moviesCollectionView.isHidden = false
       moviesTableView.isHidden = true
       searchCollection = false
+      moviesCollectionView.insertSubview(refreshControl, at: 0)
     }
+  }
+  
+  func infiniteActivityViewSetup(view: UIScrollView) -> InfiniteScrollActivityView {
+    let frame = CGRect(
+      x: 0,
+      y: view.contentSize.height,
+      width: view.bounds.size.width,
+      height: InfiniteScrollActivityView.defaultHeight
+    )
+    let loadingView = InfiniteScrollActivityView(frame: frame)
+    loadingView.isHidden = true
+    loadingView.tintColor = Constants.Theme.defaultTextColor
+    view.addSubview(loadingView)
+    
+    var insets = view.contentInset
+    insets.bottom += InfiniteScrollActivityView.defaultHeight
+    view.contentInset = insets
+    
+    return loadingView
   }
   
   func refreshMovies(_ refreshControl: UIRefreshControl) {

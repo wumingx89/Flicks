@@ -14,6 +14,7 @@ class Movie {
   private static let posterKey = "poster_path"
   private static let overviewKey = "overview"
   private static let voteAvgKey = "vote_average"
+  private static let releaseKey = "release_date"
   
   private static let sessionManager = { () -> AFHTTPSessionManager in 
     let manager = AFHTTPSessionManager()
@@ -26,6 +27,7 @@ class Movie {
   private(set) var overview: String?
   private(set) var posterPath: String?
   private(set) var voteAvg: Double!
+  private(set) var releaseDate: String?
   
   init(from json: [String: Any]) {
     id = json[Movie.idKey] as? Int
@@ -33,6 +35,7 @@ class Movie {
     overview = json[Movie.overviewKey] as? String
     posterPath = json[Movie.posterKey] as? String
     voteAvg = json[Movie.voteAvgKey] as? Double ?? 0.0
+    releaseDate = json[Movie.releaseKey] as? String
   }
   
   func hasPoster() -> Bool {

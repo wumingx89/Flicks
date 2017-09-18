@@ -12,6 +12,8 @@ class MovieCell: UITableViewCell {
   
   @IBOutlet weak var posterView: UIImageView!
   @IBOutlet weak var titleLabel: UILabel!
+  @IBOutlet weak var ratingLabel: UILabel!
+  @IBOutlet weak var releaseDateLabel: UILabel!
   @IBOutlet weak var overviewLabel: UILabel!
   
   override func awakeFromNib() {
@@ -28,6 +30,8 @@ class MovieCell: UITableViewCell {
   func setCell(with movie: Movie) {
     titleLabel.text = movie.title
     overviewLabel.text = movie.overview
+    ratingLabel.text = String(movie.voteAvg)
+    releaseDateLabel.text = movie.releaseDate
     
     MovieCell.getImage(forView: posterView, movie: movie)
   }
